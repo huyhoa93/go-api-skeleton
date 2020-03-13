@@ -28,14 +28,10 @@ func ValidateToken(c *gin.Context) bool {
 		tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 			return jwtKey, nil
 		})
-		if err != nil {
+		if err != nil || !tkn.Valid {
 			return false
 		}
-		if !tkn.Valid {
-			return false
-		}
-		userId := claims.Id
-		check := auth.CheckUser(userId)
+		check := auth.CheckUser(claims.Id)
 		if !check {
 			return false
 		}
