@@ -3,31 +3,18 @@ package news
 import (
 	"net/http"
 
-	connection "../connection"
+	connection "../../connection"
+	news "../../models/news"
 )
 
-type post struct {
-	Id      int    `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
+type response news.Response
 
-type response struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    []post `json:"data"`
-}
-
-type responseOne struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    post   `json:"data"`
-}
+type responseOne news.ResponseOne
 
 func GetNews() response {
 	db := connection.DBConn()
 	rows, err := db.Query("SELECT id, title, content FROM news")
-	var posts []post
+	var posts []news.PostData
 	if err != nil {
 		res := response{
 			Status:  http.StatusInternalServerError,
@@ -38,7 +25,7 @@ func GetNews() response {
 	}
 
 	defer rows.Close()
-	var p post
+	var p news.PostData
 	for rows.Next() {
 		var id int
 		var title, content string
@@ -96,7 +83,7 @@ func GetNewsById(id int) responseOne {
 	db := connection.DBConn()
 	q := "SELECT title, content FROM news WHERE id = ?"
 	var title, content string
-	var post post
+	var post news.PostData
 	if err := db.QueryRow(q, id).Scan(&title, &content); err != nil {
 		res := responseOne{
 			Status:  http.StatusInternalServerError,

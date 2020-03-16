@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	common "../../models/common"
 	auth "../../services/auth"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -14,19 +15,11 @@ import (
 var jwtKey = []byte(os.Getenv("SECRET_KEY"))
 
 // Create a struct to read the username and password from the request body
-type Credentials struct {
-	Username     string `json:"username"`
-	Password     string `json:"password"`
-	IsKeepLoging bool   `json:"is_keep_loging"`
-}
+type Credentials common.Credentials
 
 // Create a struct that will be encoded to a JWT.
 // We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
-type Claims struct {
-	Id       int    `json:"id"`
-	Username string `json:"username"`
-	jwt.StandardClaims
-}
+type Claims common.Claims
 
 func Login(c *gin.Context) {
 	var data Credentials

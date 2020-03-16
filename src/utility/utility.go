@@ -3,6 +3,7 @@ package utility
 import (
 	"os"
 
+	common "../models/common"
 	auth "../services/auth"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -13,11 +14,7 @@ var jwtKey = []byte(os.Getenv("SECRET_KEY"))
 
 // Create a struct that will be encoded to a JWT.
 // We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
-type Claims struct {
-	Id       int    `json:"id"`
-	Username string `json:"username"`
-	jwt.StandardClaims
-}
+type Claims common.Claims
 
 func ValidateToken(c *gin.Context) bool {
 	token := c.Request.Header.Get("Authorization")

@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	news "../services"
+	newsModel "../../models/news"
+	news "../../services/news"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,11 +19,7 @@ func GetNews(c *gin.Context) {
 }
 
 func AddNews(c *gin.Context) {
-	type CreatePost struct {
-		Title   string `form:"title" json:"title" binding:"required"`
-		Content string `form:"content" json:"content" binding:"required"`
-	}
-	var data CreatePost
+	var data newsModel.Post
 	if err := c.ShouldBindJSON(&data); err == nil {
 		res := news.AddNews(data.Title, data.Content)
 		c.JSON(res.Status, gin.H{
@@ -49,11 +46,7 @@ func GetNewsById(c *gin.Context) {
 
 func UpdateNews(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	type UpdatePost struct {
-		Title   string `form:"title" json:"title" binding:"required"`
-		Content string `form:"content" json:"content" binding:"required"`
-	}
-	var data UpdatePost
+	var data newsModel.Post
 	if err := c.ShouldBindJSON(&data); err == nil {
 		res := news.UpdateNews(id, data.Title, data.Content)
 		c.JSON(res.Status, gin.H{

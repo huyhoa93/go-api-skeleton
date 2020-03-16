@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"os"
 
-	news "./src/controllers"
 	auth "./src/controllers/auth"
+	news "./src/controllers/news"
 	utility "./src/utility"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
-func Logger() gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		check := utility.ValidateToken(c)
 		if check {
@@ -40,7 +40,7 @@ func setupRouter() *gin.Engine {
 	}
 
 	api := r.Group("/api")
-	api.Use(Logger())
+	api.Use(AuthMiddleware())
 	{
 		api.GET("/news", news.GetNews)
 		api.GET("/news/:id", news.GetNewsById)
