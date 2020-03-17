@@ -4,25 +4,36 @@ import (
 	"net/http"
 	"strconv"
 
+	common "../../models/common"
 	newsModel "../../models/news"
 	news "../../services/news"
 	"github.com/gin-gonic/gin"
 )
 
 func GetNews(c *gin.Context) {
-	res := news.GetNews()
-	if res.Status != 200 {
+	var param common.PaginationParams
+	if err := c.ShouldBindQuery(&param); err == nil {
+		res := news.GetNews(param.Page, param.Perpage)
+		if res.Status != 200 {
+			c.JSON(res.Status, gin.H{
+				"status":  res.Status,
+				"message": res.Message,
+			})
+			return
+		}
 		c.JSON(res.Status, gin.H{
 			"status":  res.Status,
 			"message": res.Message,
+			"data":    res.Data,
+			"total":   res.Total,
 		})
-		return
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
 	}
-	c.JSON(res.Status, gin.H{
-		"status":  res.Status,
-		"message": res.Message,
-		"data":    res.Data,
-	})
+
 }
 
 func AddNews(c *gin.Context) {

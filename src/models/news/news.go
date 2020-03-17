@@ -15,6 +15,7 @@ type ResponsePosts struct {
 	Status  int        `json:"status"`
 	Message string     `json:"message"`
 	Data    []PostData `json:"data,omitempty"`
+	Total   int        `json:"total,omitempty"`
 }
 
 type ResponsePost struct {

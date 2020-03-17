@@ -13,11 +13,17 @@ type response news.ResponsePosts
 
 type responseOne news.ResponsePost
 
-func GetNews() response {
+func GetNews(page, perpage int) response {
 	db := connection.DBConn()
 	defer db.Close()
+	var total int
+	result := db.Table(newsTable).Count(&total)
+	if page != 0 && perpage != 0 {
+		var offset int = (page - 1) * perpage
+		result = result.Limit(perpage).Offset(offset)
+	}
 	var posts []news.PostData
-	result := db.Table(newsTable).Find(&posts)
+	result = result.Order("id desc").Find(&posts)
 	if result.Error != nil {
 		res := response{
 			Status:  http.StatusInternalServerError,
@@ -29,6 +35,7 @@ func GetNews() response {
 		Status:  http.StatusOK,
 		Message: "Success",
 		Data:    posts,
+		Total:   total,
 	}
 	return res
 }

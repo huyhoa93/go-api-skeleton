@@ -18,3 +18,8 @@ type Claims struct {
 	Username string `json:"username"`
 	jwt.StandardClaims
 }
+
+type PaginationParams struct {
+	Page    int `form:"page"`
+	Perpage int `form:"perpage"`
+}
