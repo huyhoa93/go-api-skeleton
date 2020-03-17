@@ -6,19 +6,19 @@ type Post struct {
 }
 
 type PostData struct {
-	Id      int    `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Id      int    `json:"id,omitempty"`
+	Title   string `json:"title,omitempty"`
+	Content string `json:"content,omitempty"`
 }
 
-type Response struct {
+type ResponsePosts struct {
 	Status  int        `json:"status"`
 	Message string     `json:"message"`
-	Data    []PostData `json:"data"`
+	Data    []PostData `json:"data,omitempty"`
 }
 
-type ResponseOne struct {
+type ResponsePost struct {
 	Status  int      `json:"status"`
 	Message string   `json:"message"`
-	Data    PostData `json:"data"`
+	Data    PostData `json:"data,omitempty"`
 }

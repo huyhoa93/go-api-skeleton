@@ -11,6 +11,13 @@ import (
 
 func GetNews(c *gin.Context) {
 	res := news.GetNews()
+	if res.Status != 200 {
+		c.JSON(res.Status, gin.H{
+			"status":  res.Status,
+			"message": res.Message,
+		})
+		return
+	}
 	c.JSON(res.Status, gin.H{
 		"status":  res.Status,
 		"message": res.Message,
@@ -37,6 +44,13 @@ func AddNews(c *gin.Context) {
 func GetNewsById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	res := news.GetNewsById(id)
+	if res.Status != 200 {
+		c.JSON(res.Status, gin.H{
+			"status":  res.Status,
+			"message": res.Message,
+		})
+		return
+	}
 	c.JSON(res.Status, gin.H{
 		"status":  res.Status,
 		"message": res.Message,
