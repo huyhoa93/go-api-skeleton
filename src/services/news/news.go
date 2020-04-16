@@ -4,10 +4,12 @@ import (
 	"net/http"
 
 	connection "../../connection"
+	comments "../../models/comments"
 	news "../../models/news"
 )
 
 var newsTable string = "news"
+var commentsTable string = "comments"
 
 type response news.ResponsePosts
 
@@ -23,7 +25,7 @@ func GetNews(page, perpage int) response {
 		result = result.Limit(perpage).Offset(offset)
 	}
 	var posts []news.PostData
-	result = result.Order("id desc").Find(&posts)
+	result = result.Order("id desc").Preload("Comments").Find(&posts)
 	if result.Error != nil {
 		res := response{
 			Status:  http.StatusInternalServerError,
@@ -66,7 +68,7 @@ func GetNewsById(id int) responseOne {
 	db := connection.DBConn()
 	defer db.Close()
 	var post news.PostData
-	result := db.Table(newsTable).FirstOrInit(&post, id)
+	result := db.Table(newsTable).Preload("Comments").FirstOrInit(&post, id)
 	if result.Error != nil {
 		res := responseOne{
 			Status:  http.StatusInternalServerError,
@@ -127,6 +129,28 @@ func DeleteNews(id int) response {
 	}
 	res := response{
 		Status:  http.StatusOK,
+		Message: "Success",
+	}
+	return res
+}
+
+func AddComment(newsId int, comment string) response {
+	db := connection.DBConn()
+	defer db.Close()
+	var commentData = comments.CommentData{
+		NewsId:  newsId,
+		Comment: comment,
+	}
+	result := db.Table(commentsTable).Create(&commentData)
+	if result.Error != nil {
+		res := response{
+			Status:  http.StatusInternalServerError,
+			Message: "Server Internal Error",
+		}
+		return res
+	}
+	res := response{
+		Status:  http.StatusCreated,
 		Message: "Success",
 	}
 	return res

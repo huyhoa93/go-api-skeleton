@@ -47,6 +47,7 @@ func setupRouter() *gin.Engine {
 		api.POST("/news/add", news.AddNews)
 		api.PUT("/news/update/:id", news.UpdateNews)
 		api.DELETE("/news/delete/:id", news.DeleteNews)
+		api.POST("/news/add-comment", news.AddComment)
 	}
 
 	return r

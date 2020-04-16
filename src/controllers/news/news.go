@@ -4,6 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"gopkg.in/validator.v2"
+
+	commentsModel "../../models/comments"
 	common "../../models/common"
 	newsModel "../../models/news"
 	news "../../services/news"
@@ -38,18 +41,25 @@ func GetNews(c *gin.Context) {
 
 func AddNews(c *gin.Context) {
 	var data newsModel.Post
-	if err := c.ShouldBindJSON(&data); err == nil {
-		res := news.AddNews(data.Title, data.Content)
-		c.JSON(res.Status, gin.H{
-			"status":  res.Status,
-			"message": res.Message,
-		})
-	} else {
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": err.Error(),
 		})
+		return
 	}
+	if invalid := validator.Validate(data); invalid != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusBadRequest,
+			"message": invalid.Error(),
+		})
+		return
+	}
+	res := news.AddNews(data.Title, data.Content)
+	c.JSON(res.Status, gin.H{
+		"status":  res.Status,
+		"message": res.Message,
+	})
 }
 
 func GetNewsById(c *gin.Context) {
@@ -89,6 +99,37 @@ func UpdateNews(c *gin.Context) {
 func DeleteNews(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	res := news.DeleteNews(id)
+	c.JSON(res.Status, gin.H{
+		"status":  res.Status,
+		"message": res.Message,
+	})
+}
+
+func AddComment(c *gin.Context) {
+	var data commentsModel.CommentData
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+	if invalid := validator.Validate(data); invalid != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusBadRequest,
+			"message": invalid.Error(),
+		})
+		return
+	}
+	newsRes := news.GetNewsById(data.NewsId)
+	if newsRes.Status != 200 {
+		c.JSON(newsRes.Status, gin.H{
+			"status":  newsRes.Status,
+			"message": newsRes.Message,
+		})
+		return
+	}
+	res := news.AddComment(data.NewsId, data.Comment)
 	c.JSON(res.Status, gin.H{
 		"status":  res.Status,
 		"message": res.Message,
