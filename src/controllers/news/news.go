@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	common "../../models/common"
-	newsModel "../../models/news"
-	news "../../services/news"
+	common "go_api/src/models/common"
+	newsModel "go_api/src/models/news"
+	news "go_api/src/services/news"
+
 	"github.com/gin-gonic/gin"
 )
 

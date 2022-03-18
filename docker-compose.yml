@@ -1,0 +1,9 @@
+version: '2'
+services:
+  api:
+    build: .
+    #image: go-api-skeleton_api
+    volumes:
+      - .:/home/go/app
+    ports:
+      - "8084:3000"

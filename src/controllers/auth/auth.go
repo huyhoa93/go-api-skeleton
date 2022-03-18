@@ -5,8 +5,9 @@ import (
 	"os"
 	"time"
 
-	common "../../models/common"
-	auth "../../services/auth"
+	common "go_api/src/models/common"
+	auth "go_api/src/services/auth"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )

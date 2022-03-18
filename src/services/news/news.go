@@ -3,8 +3,8 @@ package news
 import (
 	"net/http"
 
-	connection "../../connection"
-	news "../../models/news"
+	connection "go_api/src/connection"
+	news "go_api/src/models/news"
 )
 
 var newsTable string = "news"

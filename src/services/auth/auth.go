@@ -4,8 +4,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 
-	connection "../../connection"
-	users "../../models/users"
+	connection "go_api/src/connection"
+	users "go_api/src/models/users"
 )
 
 var usersTable string = "users"

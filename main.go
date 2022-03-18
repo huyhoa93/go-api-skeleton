@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"os"
 
-	auth "./src/controllers/auth"
-	news "./src/controllers/news"
-	utility "./src/utility"
+	auth "go_api/src/controllers/auth"
+	news "go_api/src/controllers/news"
+	utility "go_api/src/utility"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -33,6 +35,18 @@ func setupRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.Static("/public", "./public")
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		// AllowOriginFunc: func(origin string) bool {
+		// 	return origin == "https://github.com"
+		// },
+		// MaxAge: 12 * time.Hour,
+	}))
 
 	authen := r.Group("/auth")
 	{
